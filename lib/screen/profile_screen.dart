@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:xsphere_code_test_prototype/constants/custom_constants.dart';
+import 'package:xsphere_code_test_prototype/database/hive_local_database.dart';
 import 'package:xsphere_code_test_prototype/model/about_model.dart';
+import 'package:xsphere_code_test_prototype/model/skill_model.dart';
 import 'package:xsphere_code_test_prototype/utils/api_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -14,9 +17,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final CustomConstants _customConstants = CustomConstants();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String aboutText = '';
-  List<String> skills = ['Flutter', 'Laravel', 'Nodejs', 'React'];
-
+  List<SkillModel> listSkillModel = [];
   ServiceApi serviceApi = ServiceApi();
+  final HiveLocalDatabase _hiveLocalDatabase = HiveLocalDatabase();
+
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw 'Could not launch $url';
+    }
+  }
+
+  @override
+  void initState() {
+    _hiveLocalDatabase.getSkills().then((value) => listSkillModel = value);
+    super.initState();
+  }
 
   void _showSkillDialog(BuildContext context) {
     final GlobalKey<FormState> titleKey = GlobalKey<FormState>();
@@ -52,7 +70,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: const Text('Cancel')),
                 MaterialButton(
                   color: Colors.blueGrey,
-                  onPressed: () {},
+                  onPressed: () async {
+                    await _hiveLocalDatabase.addSkill(SkillModel(
+                        title: titleController.text,
+                        imageUrl: logoController.text,
+                        url: linkController.text));
+                  },
                   child: Text(
                     'add',
                     style: _customConstants.textStyle(
@@ -128,10 +151,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           actions: [
             TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancel')),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel')),
             MaterialButton(
               color: Colors.blueGrey,
               child: Text(
@@ -259,9 +282,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               )),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: skills.map((e) => buildSkills(e)).toList(),
-          ),
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: listSkillModel.map((e) => buildSkills(e)).toList()),
           const SizedBox(
             height: 16,
           ),
@@ -318,7 +340,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: CircularProgressIndicator(),
         );
       });
-  Widget buildSkills(String item) => Text(item);
+  Widget buildSkills(SkillModel item) => InkWell(
+    onTap: () => _launchInBrowser(Uri.parse(item.url)),
+    child: Tooltip(
+      message: item.title,
+      child: SizedBox(
+            width: 40,
+            height: 40,
+            child: Image.network(
+                fit: BoxFit.cover, width: 40, height: 40, item.imageUrl),
+          ),
+    ),
+  );
   Widget buildCover(double coverHeight) => Container(
       height: coverHeight,
       decoration: const BoxDecoration(

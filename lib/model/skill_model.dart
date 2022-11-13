@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 part 'skill_model.g.dart';
 
 @HiveType(typeId: 0)
-class SkillModel {
+class SkillModel  extends HiveObject{
   @HiveField(0)
   final String title;
   @HiveField(1)
