@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.xsphere_code_test_prototype">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="xsphere_code_test_prototype"
         android:name="${applicationName}"
