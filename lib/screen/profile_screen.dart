@@ -1,6 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:xsphere_code_test_prototype/constants/custom_constants.dart';
-import 'package:xsphere_code_test_prototype/database/hive_local_database.dart';
 import 'package:xsphere_code_test_prototype/model/about_model.dart';
 import 'package:xsphere_code_test_prototype/model/skill_model.dart';
 import 'package:xsphere_code_test_prototype/utils/api_service.dart';
@@ -17,9 +17,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final CustomConstants _customConstants = CustomConstants();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String aboutText = '';
-  List<SkillModel> listSkillModel = [];
   ServiceApi serviceApi = ServiceApi();
-  final HiveLocalDatabase _hiveLocalDatabase = HiveLocalDatabase();
+  bool _switchValue = true;
+  List<SkillModel> listSkillModel = [
+    SkillModel(
+        title: 'Flutter',
+        imageUrl:
+            'https://www.kindpng.com/picc/m/355-3557482_flutter-logo-png-transparent-png.png',
+        url: 'https://flutter.dev/'),
+    SkillModel(
+        title: 'Laravel',
+        imageUrl:
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Laravel.svg/985px-Laravel.svg.png',
+        url: 'https://laravel.com/'),
+    SkillModel(
+        title: 'NodeJS',
+        imageUrl:
+            'https://img.favpng.com/16/11/19/node-js-javascript-web-application-express-js-computer-software-png-favpng-cYmJvJyBDcTNbLdSRdNAceLyW.jpg',
+        url: 'https://nodejs.org/en/'),
+    SkillModel(
+        title: 'React',
+        imageUrl:
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/2300px-React-icon.svg.png',
+        url: 'https://reactjs.org/')
+  ];
 
   Future<void> _launchInBrowser(Uri url) async {
     if (!await launchUrl(
@@ -28,12 +49,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     )) {
       throw 'Could not launch $url';
     }
-  }
-
-  @override
-  void initState() {
-    _hiveLocalDatabase.getSkills().then((value) => listSkillModel = value);
-    super.initState();
   }
 
   void _showSkillDialog(BuildContext context) {
@@ -70,12 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: const Text('Cancel')),
                 MaterialButton(
                   color: Colors.blueGrey,
-                  onPressed: () async {
-                    await _hiveLocalDatabase.addSkill(SkillModel(
-                        title: titleController.text,
-                        imageUrl: logoController.text,
-                        url: linkController.text));
-                  },
+                  onPressed: () async {},
                   child: Text(
                     'add',
                     style: _customConstants.textStyle(
@@ -341,17 +351,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       });
   Widget buildSkills(SkillModel item) => InkWell(
-    onTap: () => _launchInBrowser(Uri.parse(item.url)),
-    child: Tooltip(
-      message: item.title,
-      child: SizedBox(
+        onTap: () => _launchInBrowser(Uri.parse(item.url)),
+        child: Tooltip(
+          message: item.title,
+          child: SizedBox(
             width: 40,
             height: 40,
             child: Image.network(
                 fit: BoxFit.cover, width: 40, height: 40, item.imageUrl),
           ),
-    ),
-  );
+        ),
+      );
   Widget buildCover(double coverHeight) => Container(
       height: coverHeight,
       decoration: const BoxDecoration(
@@ -360,10 +370,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
               bottomLeft: Radius.circular(35.0),
               bottomRight: Radius.circular(35.0))),
       child: Center(
-          child: Text(
-        'Available',
-        style: _customConstants.textStyle(
-            color: Colors.white, isDarkMode: false, fontSize: 24),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            _switchValue?'Available' :'Currently Working',
+            style: _customConstants.textStyle(
+                color: Colors.white, isDarkMode: false, fontSize: 24),
+          ),
+          const SizedBox(width: 15,),
+          CupertinoSwitch(
+            value: _switchValue,
+            onChanged: (value) {
+              setState(() {
+                _switchValue = value;
+              });
+            },
+          ),
+        ],
       )));
 
   Widget buildProfileImage(double profileHeight) => Hero(

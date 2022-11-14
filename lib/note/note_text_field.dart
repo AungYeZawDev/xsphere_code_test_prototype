@@ -47,6 +47,7 @@ class _NoteTextFieldState extends State<NoteTextField> {
     bool isDarkMode = brightness == Brightness.dark;
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor: const Color.fromARGB(255, 229, 209, 255),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

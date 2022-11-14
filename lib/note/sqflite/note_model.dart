@@ -1,4 +1,6 @@
-class NoteModel {
+import 'package:flutter/material.dart';
+
+class NoteModel with ChangeNotifier {
   int? id;
   String dateTime = '';
   String note = '';

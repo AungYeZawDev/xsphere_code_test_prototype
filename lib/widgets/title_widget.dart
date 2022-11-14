@@ -7,14 +7,14 @@ Widget titleWidget(String title) {
     shaderCallback: (Rect bounds) => const LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [Colors.white, Colors.transparent],
+      colors: [Colors.white, Colors.white],
     ).createShader(bounds),
     child: Tooltip(
         message: 'Find your dream job',
         child: Text(
           title,
           style: customConstants.textStyle(
-              color: Colors.black,
+              color: Colors.white,
               isDarkMode: false,
               fontSize: 20,
               fontWeight: FontWeight.bold),

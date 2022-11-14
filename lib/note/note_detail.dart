@@ -36,12 +36,17 @@ class _NoteDetailState extends State<NoteDetail> {
                     onTap: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Icon(Icons.arrow_back_ios_outlined))),
+                    child: const Icon(
+                      Icons.arrow_back_ios_outlined,
+                      color: Colors.white,
+                    ))),
             Padding(
                 padding: EdgeInsets.only(
                   top: MediaQuery.of(context).padding.top + 8,
                 ),
-                child: titleWidget('NOTE')),
+                child: titleWidget(
+                    'NOTE',
+                    )),
             Container()
           ],
         ),
