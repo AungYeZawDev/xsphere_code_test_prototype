@@ -20,7 +20,7 @@ class _NoteScreenState extends State<NoteScreen> {
   List<NoteModel> notes = [];
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     final NoteDatabase noteDatabase =
         Provider.of<NoteDatabase>(context, listen: false);
     noteDatabase.getData().then((value) {
@@ -29,7 +29,36 @@ class _NoteScreenState extends State<NoteScreen> {
           notes = value;
         });
       }
+      setState(() {});
     });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    final NoteDatabase noteDatabase =
+        Provider.of<NoteDatabase>(context, listen: false);
+    noteDatabase.getData();
+    super.dispose();
+  }
+
+  Widget _buildNotes(NoteModel noteModel) =>
+      AnimationConfiguration.staggeredList(
+        position: noteModel.id!,
+        duration: const Duration(milliseconds: 500),
+        child: ScaleAnimation(
+          duration: const Duration(milliseconds: 900),
+          curve: Curves.fastLinearToSlowEaseIn,
+          child: FadeInAnimation(
+              child: NoteCard(
+            date: noteModel.dateTime,
+            data: noteModel.note,
+            index: noteModel.id!,
+          )),
+        ),
+      );
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xFF512f7f),
         body: notes.isEmpty
@@ -39,45 +68,26 @@ class _NoteScreenState extends State<NoteScreen> {
             : Padding(
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height / 8.6),
-                child: ListView.builder(
-                  physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics()),
-                  padding:
-                      EdgeInsets.all(MediaQuery.of(context).size.width / 60),
-                  itemCount: notes.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    // int i = (notes.length - index) - 1;
-                    return AnimationConfiguration.staggeredList(
-                      position: index,
-                      duration: const Duration(milliseconds: 500),
-                      child: ScaleAnimation(
-                        duration: const Duration(milliseconds: 900),
-                        curve: Curves.fastLinearToSlowEaseIn,
-                        child: FadeInAnimation(
-                            child: NoteCard(
-                          date: notes[index].dateTime,
-                          data: notes[index].note,
-                          index: notes[index].id!,
-                        )),
-                      ),
-                    );
-                  },
-                ),
-              ),
+                child: ListView(
+                  children: notes.map((e) => _buildNotes(e)).toList(),
+                )),
         floatingActionButton: FloatingActionButton(
-          backgroundColor:const Color(0xff5f3d8b),
+          backgroundColor: const Color(0xff5f3d8b),
           onPressed: () {
             setState(() {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const NoteTextField(
+                    builder: (_) => const NoteTextField(
                           edit: false,
                         )),
               );
             });
           },
-          child: const Icon(Icons.add,color: Colors.white,),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ));
   }
 }

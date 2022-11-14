@@ -128,22 +128,15 @@ class _NoteTextFieldState extends State<NoteTextField> {
                             onPressed: () async {
                               if (textEditingController.text.isNotEmpty) {
                                 widget.edit
-                                    ? noteDatabase
-                                        .updateData(NoteModel(
-                                            id: widget.id,
-                                            dateTime: widget.date!,
-                                            note: textEditingController.text))
-                                        .then((value) async {
-                                        Navigator.of(context).pop();
-                                      })
-                                    : noteDatabase
-                                        .insertData(NoteModel(
+                                    ? noteDatabase.updateData(NoteModel(
+                                        id: widget.id,
+                                        dateTime: widget.date!,
+                                        note: textEditingController.text))
+                                    : noteDatabase.insertData(NoteModel(
                                         dateTime: '$date  $time',
                                         note: textEditingController.text,
-                                      ))
-                                        .then((value) {
-                                        Navigator.of(context).pop();
-                                      });
+                                      ));
+                                Navigator.of(context).pop(context);
                               } else {
                                 buildSnackError(
                                     'Please write notes!', context, size);

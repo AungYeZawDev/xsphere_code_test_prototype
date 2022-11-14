@@ -50,75 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       throw 'Could not launch $url';
     }
   }
-
-  void _showSkillDialog(BuildContext context) {
-    final GlobalKey<FormState> titleKey = GlobalKey<FormState>();
-    final GlobalKey<FormState> logoKey = GlobalKey<FormState>();
-    final GlobalKey<FormState> linkKey = GlobalKey<FormState>();
-    TextEditingController titleController = TextEditingController();
-    TextEditingController logoController = TextEditingController();
-    TextEditingController linkController = TextEditingController();
-    showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text('Add skills'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildTextFormField('title', titleKey, titleController),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  _buildTextFormField('logo url', logoKey, logoController),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  _buildTextFormField('link', linkKey, linkController),
-                ],
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancel')),
-                MaterialButton(
-                  color: Colors.blueGrey,
-                  onPressed: () async {},
-                  child: Text(
-                    'add',
-                    style: _customConstants.textStyle(
-                        color: Colors.white, isDarkMode: false, fontSize: 14),
-                  ),
-                )
-              ],
-            ));
-  }
-
-  TextFormField _buildTextFormField(
-          String label, Key key, TextEditingController controller) =>
-      TextFormField(
-          key: key,
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: label,
-            fillColor: Colors.white,
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: const BorderSide(
-                color: Colors.blueGrey,
-              ),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              borderSide: const BorderSide(
-                color: Colors.grey,
-                width: 2.0,
-              ),
-            ),
-          ));
-
+  
   void _showAboutDialog(BuildContext context, String text) {
     TextEditingController textEditingController =
         TextEditingController(text: text);
@@ -269,26 +201,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: const EdgeInsets.only(left: 18.0),
-                child: Row(
-                  children: [
-                    Text(
-                      'Skills',
-                      style: _customConstants.textStyle(
-                          color: Colors.black,
-                          isDarkMode: false,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          _showSkillDialog(context);
-                        },
-                        icon: const Icon(
-                          Icons.edit,
-                          size: 18,
-                          color: Colors.blueGrey,
-                        ))
-                  ],
+                child: Text(
+                  'Skills',
+                  style: _customConstants.textStyle(
+                      color: Colors.black,
+                      isDarkMode: false,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold),
                 ),
               )),
           Row(

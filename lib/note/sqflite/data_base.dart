@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'package:xsphere_code_test_prototype/note/sqflite/note_model.dart';
 
-class NoteDatabase with ChangeNotifier{
+class NoteDatabase with ChangeNotifier {
   NoteDatabase? noteDatabase;
   Database? _database;
   String noteTable = 'note_table';
